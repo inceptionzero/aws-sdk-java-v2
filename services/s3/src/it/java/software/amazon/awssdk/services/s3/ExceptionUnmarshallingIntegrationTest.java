@@ -83,6 +83,13 @@ public class ExceptionUnmarshallingIntegrationTest extends S3IntegrationTestBase
     }
 
     @Test
+    public void asyncGetBucketPolicyNoSuchBucket() {
+        assertThatThrownBy(() -> s3Async.getBucketPolicy(b -> b.bucket(BUCKET + KEY)).join())
+            .hasCauseExactlyInstanceOf(NoSuchBucketException.class)
+            .satisfies(e -> assertMetadata((S3Exception) e.getCause(), "NoSuchBucket"));
+    }
+
+    @Test
     public void getObjectAclNoSuchKey() {
         assertThatThrownBy(() -> s3.getObjectAcl(b -> b.bucket(BUCKET).key(KEY)))
             .isInstanceOf(NoSuchKeyException.class)
